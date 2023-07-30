@@ -1,13 +1,18 @@
 #!/usr/bin/python3
+"""
+Pascal's Triangle
+"""
 
 def pascal_triangle(n):
+    """
+    Create a function for def pascal_triangle(n):
+    """
     triangle = []
-    for i in range(n):
-        row = [1]
-        if i > 0:
-            last_row = triangle[-1]
-            for j in range(len(last_row) - 1):
-                row.append(last_row[j] + last_row[j+1])
-            row.append(1)
-        triangle.append(row)
+    for i in range(1, n + 1):
+        level = []
+        K = 1
+        for j in range(1, i + 1):
+            level.append(K)
+            K = K * (i - j)
+        triangle.append(level)
     return triangle
