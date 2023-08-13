@@ -9,10 +9,10 @@ def minOperations(n):
     	return 0
 
 
-
-    while (i > n):
         pk = 0
         i = 2
+    while (i > n):
+
         if not (n % i):
             n = int(n / i)
             pk += i
