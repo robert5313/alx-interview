@@ -7,12 +7,10 @@ def minOperations(n):
     '''
     if not isinstance(n, int):
     	return 0
-
-
         pk = 0
         i = 2
-    while (I <= n):
 
+    while (1 <= n)
         if not (n % i):
             n = int(n / i)
             pk += i
