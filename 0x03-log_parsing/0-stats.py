@@ -1,15 +1,31 @@
 #!/usr/bin/python3
-import random
-import sys
-from time import sleep
-import datetime
+'''Module 0 Tasks log parsing.
+'''
 
-for i in range(10000):
-    sleep(random.random())
-    sys.stdout.write("{:d}.{:d}.{:d}.{:d} - [{}] \"GET /projects/260 HTTP/1.1\" {} {}\n".format(
-        random.randint(1, 255), random.randint(1, 255), random.randint(1, 255), random.randint(1, 255),
-        datetime.datetime.now(),
-        random.choice([200, 301, 400, 401, 403, 404, 405, 500]),
-        random.randint(1, 1024)
-    ))
-    sys.stdout.flush()
+import sys
+
+total_size = 0
+status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
+
+try:
+    for i, line in enumerate(sys.stdin, start=1):
+        try:
+            ip, _, _, _, status_code, file_size = line.split()
+            status_code = int(status_code)
+            file_size = int(file_size)
+            total_size += file_size
+            status_codes[status_code] += 1
+        except ValueError:
+            continue
+
+        if i % 10 == 0:
+            print(f"Total file size: {total_size}")
+            for code in sorted(status_codes):
+                if status_codes[code] > 0:
+                    print(f"{code}: {status_codes[code]}")
+
+except KeyboardInterrupt:
+    print(f"\nTotal file size: {total_size}")
+    for code in sorted(status_codes):
+        if status_codes[code] > 0:
+            print(f"{code}: {status_codes[code]}")
