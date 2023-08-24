@@ -1,35 +1,38 @@
-<<<<<<< HEAD
-
-=======
 #!/usr/bin/python3
-'''Module 0 Tasks log parsing.
+'''Module 0 log parsing.
 '''
 
 import sys
 
-total_size = 0
-status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
+if __name__ == '__main__':
 
-try:
-    for i, line in enumerate(sys.stdin, start=1):
-        try:
-            ip, _, _, _, status_code, file_size = line.split()
-            status_code = int(status_code)
-            file_size = int(file_size)
-            total_size += file_size
-            status_codes[status_code] += 1
-        except ValueError:
-            continue
+    filesize, count = 0, 0
+    codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
+    stats = {j: 0 for j in codes}
 
-        if i % 10 == 0:
-            print(f"Total file size: {total_size}")
-            for code in sorted(status_codes):
-                if status_codes[code] > 0:
-                    print(f"{code}: {status_codes[code]}")
+    def print_stats(stats: dict, file_size: int) -> None:
+        print("File size: {:d}".format(filesize))
+        for j, y in sorted(stats.items()):
+            if y:
+                print("{}: {}".format(j, y))
 
-except KeyboardInterrupt:
-    print(f"\nTotal file size: {total_size}")
-    for code in sorted(status_codes):
-        if status_codes[code] > 0:
-            print(f"{code}: {status_codes[code]}")
->>>>>>> eb3a41d595a1ed241ac05433741daf21f2ac2106
+    try:
+        for line in sys.stdin:
+            count += 1
+            data = line.split()
+            try:
+                status_code = data[-2]
+                if status_code in stats:
+                    stats[status_code] += 1
+            except BaseException:
+                pass
+            try:
+                filesize += int(data[-1])
+            except BaseException:
+                pass
+            if count % 10 == 0:
+                print_stats(stats, filesize)
+        print_stats(stats, filesize)
+    except KeyboardInterrupt:
+        print_stats(stats, filesize)
+        raise
