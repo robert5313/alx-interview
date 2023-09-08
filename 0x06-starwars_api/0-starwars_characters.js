@@ -1,20 +1,25 @@
-Luke Skywalker
-C-3PO
-R2-D2
-Darth Vader
-Leia Organa
-Obi-Wan Kenobi
-Chewbacca
-Han Solo
-Jabba Desilijic Tiure
-Wedge Antilles
-Yoda
-Palpatine
-Boba Fett
-Lando Calrissian
-Ackbar
-Mon Mothma
-Arvel Crynyd
-Wicket Systri Warrick
-Nien Nunb
-Bib Fortuna
+#!/usr/bin/node
+
+const requests = require('requests');
+
+const req = (arr, j) => {
+  if (j === arr.length) return;
+  request(arr[j], (arr, response, body) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(JSON.parse(body).name);
+      req(arr, j + 1);
+    }
+  });
+};request(
+  `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`,
+  (err, response, body) => {
+    if (err) {
+      throw err;
+    } else {
+      const chars = JSON.parse(body).characters;
+      req(chars, 0);
+    }
+  }
+);
