@@ -6,7 +6,6 @@ def makeChange(coins, total):
         number of coins needed to meet a given amount total.
         Return: fewest number of coins needed to meet total
     """
-
     if total <= 0:
         return 0
     rem = total
