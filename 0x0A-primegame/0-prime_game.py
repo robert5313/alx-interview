@@ -2,7 +2,7 @@
 """ Prime Game """
 
 
-def is_winner(x, nums):
+def isWinner(x, nums):
     # Initialize counters for Maria and Ben wins
     maria_wins_count = 0
     ben_wins_count = 0
