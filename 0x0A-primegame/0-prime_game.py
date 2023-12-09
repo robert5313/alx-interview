@@ -1,67 +1,78 @@
 #!/usr/bin/python3
-""" Prime Game """
+"""Module for Prime Game"""
 
 
-def isWinner(x, nums):
-    # Initialize counters for Maria and Ben wins
-    maria_wins_count = 0
-    ben_wins_count = 0
+def isWinner(num_rounds, sets_of_numbers):
+    """
+    Determines the winner of a set of prime number removal games.
 
-    # Iterate over each number in the nums list
-    for num in nums:
-        # Create a set of rounds from 1 to the current number
-        rounds_set = list(range(1, num + 1))
-        
-        # Generate a set of prime numbers within the range of 1 to the current number
-        primes_set = primes_in_range(1, num)
+    Args:
+        num_rounds (int): The number of rounds.
+        sets_of_numbers (list of int): A list of integers where each integer n denotes
+        a set of consecutive integers from 1 up to n.
 
-        # If there are no prime numbers, increment Ben's win count and continue to the next number
-        if not primes_set:
-            ben_wins_count += 1
-            continue
+    Returns:
+        str: The name of the player who won the most rounds (either "Ben" or "Maria").
+        None: If the winner cannot be determined.
 
-        # Variable to keep track of whose turn it is (Maria or Ben)
-        is_maria_turns = True
-
-        # Loop until there are no more prime numbers in the set
-        while primes_set:
-            # Remove the smallest prime number from the set
-            smallest_prime = primes_set.pop(0)
-            
-            # Remove all multiples of the smallest prime from the rounds set
-            rounds_set.remove(smallest_prime)
-            
-            # Filter out numbers from the rounds set that are divisible by the smallest prime
-            rounds_set = [x for x in rounds_set if x % smallest_prime != 0]
-
-            # Alternate turns between Maria and Ben
-            is_maria_turns = not is_maria_turns
-
-        # Update the win counts based on the result of the game
-        if is_maria_turns:
-            ben_wins_count += 1
-        else:
-            maria_wins_count += 1
-
-    # Compare the win counts and determine the winner
-    if maria_wins_count > ben_wins_count:
-        return "Maria"
-    elif maria_wins_count < ben_wins_count:
-        return "Ben"
-    else:
+    Raises:
+        None.
+    """
+    # Check for invalid input
+    if num_rounds <= 0 or sets_of_numbers is None:
         return None
+    if num_rounds != len(sets_of_numbers):
+        return None
+    # Initialize scores and array of possible prime numbers
+    ben_score = 0
+    maria_score = 0
+    # Create a list 'possible_primes' of length max(sets_of_numbers) + 1 with all elements
+    # initialized to 1
+    possible_primes = [1 for _ in range(max(sets_of_numbers) + 1)]
+    # The first two elements of the list, possible_primes[0] and possible_primes[1], are set to 0
+    # because 0 and 1 are not prime numbers
+    possible_primes[0], possible_primes[1] = 0, 0
+    # Use Sieve of Eratosthenes algorithm to generate array of prime numbers
+    for i in range(2, len(possible_primes)):
+        remove_multiples(possible_primes, i)
+    # Play each round of the game
+    for num in sets_of_numbers:
+        # If the sum of numbers in the set is even, Ben wins
+        if sum(possible_primes[0:num + 1]) % 2 == 0:
+            ben_score += 1
+        else:
+            maria_score += 1
+    # Determine the winner of the game
+    if ben_score > maria_score:
+        return "Ben"
+    if maria_score > ben_score:
+        return "Maria"
+    return None
 
-def is_prime(n):
-    # Check if a number is prime
-    if n < 2:
-        return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
 
-def primes_in_range(start, end):
-    # Generate a list of prime numbers within a given range
-    primes = [n for n in range(start, end + 1) if is_prime(n)]
-    return primes
+def remove_multiples(prime_list, prime_num):
+    """
+    Removes multiples of a prime number from an array of possible prime
+    numbers.
 
+    Args:
+        prime_list (list of int): An array of possible prime numbers.
+        prime_num (int): The prime number to remove multiples of.
+
+    Returns:
+        None.
+
+    Raises:
+        None.
+    """
+    # This loop iterates over multiples of a prime number and marks them as
+    # non-prime by setting their corresponding value to 0 in the input
+    # list prime_list. Starting from 2, it sets every multiple of prime_num up to the
+    # length of prime_list to 0. If the index i * prime_num is out of range
+    # for the list prime_list, the try block will raise an IndexError exception, and the loop will
+    # terminate using the break statement.
+    for i in range(2, len(prime_list)):
+        try:
+            prime_list[i * prime_num] = 0
+        except IndexError:
+            break
